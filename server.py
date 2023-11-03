@@ -6,7 +6,7 @@ messages = queue.Queue()
 clients = []
 
 server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-server.bind(("192.168.29.169", 9999))
+server.bind(("192.168.29.169", 1))
 
 def recieve():
     while 5 < 6:
@@ -18,7 +18,7 @@ def recieve():
 
 def broadcast():
     while 4 < 5:
-        while messages.empty == False:
+        while messages.empty() == False:
             message, address = messages.get()
             print(message.decode())
             if address not in clients:
@@ -29,6 +29,7 @@ def broadcast():
                     if message.decode().startswith("SIGNUP_TAG:"):
                         name = message.decode()[message.decode().index(":")+1:]
                         server.sendto(f"{name} joined!".encode(), client)
+                    
                     else:
                         server.sendto(message, client)
                 except:
