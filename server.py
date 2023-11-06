@@ -1,6 +1,7 @@
 import socket
 import queue
 import threading
+import os
 
 messages = queue.Queue()
 clients = []
@@ -8,11 +9,21 @@ clients = []
 server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server.bind(("192.168.29.169", 1))
 
+def save_chat_history(message, address):
+    with open("chat_history.txt", "a") as chat_file:
+        chat_file.write(f"{address}: {message.decode()}\n")
+        
+if not os.path.exists("chat_history.txt"):
+    with open("chat_history.txt", "w"):
+        pass
+
 def recieve():
     while 5 < 6:
         try:
             message, address = server.recvfrom(1024)
             messages.put((message, address))
+
+            save_chat_history(message, address)
         except:
             pass
 
